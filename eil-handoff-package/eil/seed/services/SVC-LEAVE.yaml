@@ -1,0 +1,29 @@
+id: SVC-LEAVE
+name: Leave Request
+enabled: true
+intent: LEAVE_REQUEST
+description: Annual, sick and unpaid leave.
+utterance_examples:
+  - "I want leave from Monday to Wednesday"
+  - "applying for two days off next week"
+base_tier: 1
+connector: internal
+sla_hours: 8
+owning_department_id: DEPT-HR
+policies: [POL-HR-118]
+rules_file: rules/leave.yaml
+
+fields:
+  - { name: employee_id,        type: string, source: context, from: session.employee_id }
+  - { name: manager_id,         type: string, source: context, from: employee.manager_id }
+  - { name: leave_balance_days, type: number, source: context, from: employee.leave_balance_days }
+  - { name: leave_type,         type: enum,   source: derived, default: ANNUAL, values: [ANNUAL, SICK, UNPAID] }
+  - { name: start_date,         type: date,   source: ask, prompt_hint: "start date" }
+  - { name: end_date,           type: date,   source: ask, prompt_hint: "end date" }
+  - { name: requested_days,     type: number, source: derived, rule: "working days between start_date and end_date" }
+  - { name: days_until_start,   type: int,    source: derived, rule: "start_date - today" }
+
+exception_profile:
+  allowed: true
+  default_expiry: end_date
+  requires_evidence: false

@@ -1,0 +1,113 @@
+[
+  {
+    "id": "EMP-101", "name": "Aarav Sharma", "email": "aarav.sharma@acmecorp.example",
+    "title": "Senior Software Engineer", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-ENG-04", "grade": "G6",
+    "leave_balance_days": 12.5, "roles": ["employee"],
+    "demo_note": "Primary employee persona. Drives Scenario A (travel exception)."
+  },
+  {
+    "id": "EMP-102", "name": "Neha Verma", "email": "neha.verma@acmecorp.example",
+    "title": "Product Manager", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Pune", "city_tier": 2, "cost_center": "CC-ENG-04", "grade": "G7",
+    "leave_balance_days": 4.0, "roles": ["employee"]
+  },
+  {
+    "id": "EMP-103", "name": "Karthik Iyer", "email": "karthik.iyer@acmecorp.example",
+    "title": "Data Analyst", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Bengaluru", "city_tier": 1, "cost_center": "CC-ENG-07", "grade": "G5",
+    "leave_balance_days": 18.0, "roles": ["employee"]
+  },
+  {
+    "id": "EMP-104", "name": "Ishita Rao", "email": "ishita.rao@acmecorp.example",
+    "title": "Site Reliability Engineer", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Bengaluru", "city_tier": 1, "cost_center": "CC-ENG-07", "grade": "G6",
+    "leave_balance_days": 9.0, "roles": ["employee"],
+    "demo_note": "Drives Scenario B (production access ownership deadlock)."
+  },
+  {
+    "id": "EMP-105", "name": "Rohan Gupta", "email": "rohan.gupta@acmecorp.example",
+    "title": "Sales Executive", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Delhi", "city_tier": 1, "cost_center": "CC-SAL-01", "grade": "G5",
+    "leave_balance_days": 2.0, "roles": ["employee"]
+  },
+  {
+    "id": "EMP-106", "name": "Sana Qureshi", "email": "sana.qureshi@acmecorp.example",
+    "title": "QA Engineer", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Hyderabad", "city_tier": 1, "cost_center": "CC-ENG-04", "grade": "G4",
+    "leave_balance_days": 21.0, "roles": ["employee"]
+  },
+  {
+    "id": "EMP-107", "name": "Vikram Desai", "email": "vikram.desai@acmecorp.example",
+    "title": "Junior Developer", "department_id": "DEPT-ENG", "manager_id": "EMP-207",
+    "location": "Nagpur", "city_tier": 2, "cost_center": "CC-ENG-04", "grade": "G3",
+    "leave_balance_days": 6.5, "roles": ["employee"],
+    "demo_note": "Grade G3 — used to demonstrate Tier-4 restricted denial on production access."
+  },
+  {
+    "id": "EMP-108", "name": "Meera Krishnan", "email": "meera.krishnan@acmecorp.example",
+    "title": "Finance Analyst", "department_id": "DEPT-FIN", "manager_id": "EMP-205",
+    "location": "Chennai", "city_tier": 1, "cost_center": "CC-FIN-02", "grade": "G5",
+    "leave_balance_days": 11.0, "roles": ["employee"]
+  },
+
+  {
+    "id": "EMP-201", "name": "Deepa Raghavan", "email": "deepa.raghavan@acmecorp.example",
+    "title": "Head of Human Resources", "department_id": "DEPT-HR", "manager_id": null,
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-HR-01", "grade": "G9",
+    "leave_balance_days": 15.0, "roles": ["employee", "approver", "policy_owner"]
+  },
+  {
+    "id": "EMP-202", "name": "Arjun Bhatt", "email": "arjun.bhatt@acmecorp.example",
+    "title": "Chief Information Security Officer", "department_id": "DEPT-SEC", "manager_id": null,
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-SEC-01", "grade": "G9",
+    "leave_balance_days": 10.0, "roles": ["employee", "approver", "policy_owner"]
+  },
+  {
+    "id": "EMP-203", "name": "Priya Nair", "email": "priya.nair@acmecorp.example",
+    "title": "Data Custodian, Head of Data Governance", "department_id": "DEPT-DG", "manager_id": null,
+    "location": "Bengaluru", "city_tier": 1, "cost_center": "CC-DG-01", "grade": "G8",
+    "leave_balance_days": 13.0, "roles": ["employee", "approver", "policy_owner"],
+    "demo_note": "The CORRECT approver for production data access once the deadlock is resolved."
+  },
+  {
+    "id": "EMP-204", "name": "Sameer Joshi", "email": "sameer.joshi@acmecorp.example",
+    "title": "Head of IT Platform (Application Owner)", "department_id": "DEPT-IT", "manager_id": null,
+    "location": "Pune", "city_tier": 2, "cost_center": "CC-IT-01", "grade": "G8",
+    "leave_balance_days": 7.0, "roles": ["employee", "approver", "policy_owner"]
+  },
+  {
+    "id": "EMP-205", "name": "Lakshmi Menon", "email": "lakshmi.menon@acmecorp.example",
+    "title": "Finance Director", "department_id": "DEPT-FIN", "manager_id": null,
+    "location": "Chennai", "city_tier": 1, "cost_center": "CC-FIN-01", "grade": "G9",
+    "leave_balance_days": 9.0, "roles": ["employee", "approver", "policy_owner"],
+    "demo_note": "Second approver in Scenario A (high-value spend)."
+  },
+  {
+    "id": "EMP-206", "name": "Tanvi Shah", "email": "tanvi.shah@acmecorp.example",
+    "title": "Travel Operations Lead", "department_id": "DEPT-TRV", "manager_id": null,
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-TRV-01", "grade": "G7",
+    "leave_balance_days": 14.0, "roles": ["employee", "approver", "policy_owner"],
+    "demo_note": "First approver in Scenario A (lodging cap exception)."
+  },
+  {
+    "id": "EMP-207", "name": "Rahul Menon", "email": "rahul.menon@acmecorp.example",
+    "title": "Director of Engineering", "department_id": "DEPT-ENG", "manager_id": null,
+    "location": "Bengaluru", "city_tier": 1, "cost_center": "CC-ENG-01", "grade": "G8",
+    "leave_balance_days": 8.0, "roles": ["employee", "approver"],
+    "demo_note": "Manager persona for all EMP-10x employees."
+  },
+  {
+    "id": "EMP-208", "name": "Farah Sheikh", "email": "farah.sheikh@acmecorp.example",
+    "title": "Facilities Manager", "department_id": "DEPT-FAC", "manager_id": null,
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-FAC-01", "grade": "G6",
+    "leave_balance_days": 12.0, "roles": ["employee", "approver"]
+  },
+  {
+    "id": "EMP-999", "name": "Ops Admin", "email": "ops.admin@acmecorp.example",
+    "title": "Service Platform Administrator", "department_id": "DEPT-IT", "manager_id": "EMP-204",
+    "location": "Mumbai", "city_tier": 1, "cost_center": "CC-IT-01", "grade": "G7",
+    "leave_balance_days": 10.0, "roles": ["employee", "admin", "policy_owner"],
+    "demo_note": "Admin persona. Runs the stuck queue and approves the proposed routing rule."
+  }
+]

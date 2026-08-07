@@ -1,0 +1,106 @@
+# Ownership edges.
+#
+# Read each edge as: "source_department asserts that approval for <service_id>
+# belongs to asserts_approver_department, on the authority of clause_ref."
+#
+# Edges OWN-A01..OWN-A04 form a deliberate 4-node cycle for SVC-ACCESS.
+# This is the seeded approval deadlock that NetworkX must detect in Scenario B.
+# DO NOT "fix" this data — the deadlock is the demo.
+
+edges:
+
+  # ---------------------------------------------------------------
+  # SVC-ACCESS — the deadlock: HR -> SEC -> DG -> IT -> HR
+  # ---------------------------------------------------------------
+  - id: OWN-A01
+    source_department_id: DEPT-HR
+    service_id: SVC-ACCESS
+    asserts_approver_department_id: DEPT-SEC
+    clause_ref: POL-HR-118§7.1
+    note: "HR policy states that all system access requests are subject to Information Security review."
+
+  - id: OWN-A02
+    source_department_id: DEPT-SEC
+    service_id: SVC-ACCESS
+    asserts_approver_department_id: DEPT-DG
+    clause_ref: POL-SEC-204§4.2
+    note: "Security policy assigns approval for production data stores to the Data Custodian."
+
+  - id: OWN-A03
+    source_department_id: DEPT-DG
+    service_id: SVC-ACCESS
+    asserts_approver_department_id: DEPT-IT
+    clause_ref: POL-DG-090§2.2
+    note: "Data Governance delegates operational approval to the Application Owner. SUPERSEDED by POL-SEC-204 v3.1."
+
+  - id: OWN-A04
+    source_department_id: DEPT-IT
+    service_id: SVC-ACCESS
+    asserts_approver_department_id: DEPT-HR
+    clause_ref: POL-IT-330§3.4
+    note: "IT Service Ownership policy requires access requests to be raised and validated through HR."
+
+  # ---------------------------------------------------------------
+  # SVC-TRAVEL — clean, no cycle. Two policies COMPOUND rather than conflict.
+  # ---------------------------------------------------------------
+  - id: OWN-T01
+    source_department_id: DEPT-ENG
+    service_id: SVC-TRAVEL
+    asserts_approver_department_id: DEPT-TRV
+    clause_ref: POL-TRV-101§5.7
+    note: "Lodging cap exceptions are approved by Travel Operations."
+
+  - id: OWN-T02
+    source_department_id: DEPT-TRV
+    service_id: SVC-TRAVEL
+    asserts_approver_department_id: DEPT-FIN
+    clause_ref: POL-FIN-220§3.1
+    note: "Any single trip above the high-value spend threshold additionally requires Finance sign-off."
+
+  # ---------------------------------------------------------------
+  # SVC-LEAVE — trivially clean, used as the low-tier control case.
+  # ---------------------------------------------------------------
+  - id: OWN-L01
+    source_department_id: DEPT-ENG
+    service_id: SVC-LEAVE
+    asserts_approver_department_id: DEPT-ENG
+    clause_ref: POL-HR-118§3.2
+    note: "Leave is approved by the employee's reporting manager."
+
+  # ---------------------------------------------------------------
+  # SVC-SOFTWARE — pre-wired for the live service-addition demo (Scenario C).
+  # ---------------------------------------------------------------
+  - id: OWN-S01
+    source_department_id: DEPT-ENG
+    service_id: SVC-SOFTWARE
+    asserts_approver_department_id: DEPT-IT
+    clause_ref: POL-IT-330§5.1
+    note: "Software licence requests are approved by IT Platform."
+
+  - id: OWN-S02
+    source_department_id: DEPT-IT
+    service_id: SVC-SOFTWARE
+    asserts_approver_department_id: DEPT-SEC
+    clause_ref: POL-SEC-204§6.4
+    note: "Tools that process customer data additionally require a security review."
+
+
+# Precedence used by engine/resolution.py to break a cycle, applied in order.
+precedence:
+  policy_class_order: [SECURITY, FINANCIAL, HR, OPERATIONAL]
+  then: [explicit_supersession, effective_date_desc, service_specificity]
+
+# Expected resolution for the SVC-ACCESS cycle. The engine must derive this
+# independently; this block exists so tests can assert against it.
+expected_resolution:
+  service_id: SVC-ACCESS
+  cycle: [DEPT-HR, DEPT-SEC, DEPT-DG, DEPT-IT]
+  governing_clause: POL-SEC-204§4.2
+  governing_reason: >-
+    POL-SEC-204 is a SECURITY-class policy (highest precedence), is the most recent
+    version (v3.1, effective 2026-04-01), and explicitly supersedes POL-DG-090§2.2,
+    which is the clause that continued the delegation chain.
+  correct_approver_department_id: DEPT-DG
+  correct_approver_employee_id: EMP-203
+  edges_invalidated: [OWN-A03, OWN-A04]
+  hr_approval_required: false

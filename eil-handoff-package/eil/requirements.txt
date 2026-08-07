@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+langgraph
+langgraph-checkpoint-sqlite
+requests
+python-dotenv
+sqlalchemy>=2.0
+rank_bm25
+chromadb
+networkx
+pyyaml
+pytest

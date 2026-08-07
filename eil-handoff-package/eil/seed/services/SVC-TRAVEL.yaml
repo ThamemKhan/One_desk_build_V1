@@ -1,0 +1,52 @@
+id: SVC-TRAVEL
+name: Business Travel Request
+enabled: true
+intent: TRAVEL_BOOKING
+description: Domestic or international business travel including transport and lodging.
+utterance_examples:
+  - "I need to travel to Bangalore next week for a client meeting"
+  - "book me a trip to Delhi"
+  - "I have to visit the Chennai office on the 14th"
+base_tier: 2
+connector: internal
+sla_hours: 24
+owning_department_id: DEPT-TRV
+policies: [POL-TRV-101, POL-FIN-220]
+rules_file: rules/travel.yaml
+
+# source: context  -> resolved from enterprise systems, NEVER asked
+# source: derived  -> computed, NEVER asked
+# source: ask      -> asked ONLY if not already extracted from the message
+fields:
+  - { name: employee_id,            type: string, source: context, from: session.employee_id }
+  - { name: employee_grade,         type: string, source: context, from: employee.grade }
+  - { name: cost_center,            type: string, source: context, from: employee.cost_center }
+  - { name: manager_id,             type: string, source: context, from: employee.manager_id }
+  - { name: origin_city,            type: string, source: context, from: employee.location }
+  - { name: destination_city,       type: string, source: ask, prompt_hint: "destination city" }
+  - { name: destination_city_tier,  type: int,    source: derived, rule: "tier1_list lookup on destination_city (POL-TRV-101§3.1)" }
+  - { name: start_date,             type: date,   source: ask, prompt_hint: "travel dates" }
+  - { name: end_date,               type: date,   source: ask, prompt_hint: "travel dates" }
+  - { name: nights,                 type: int,    source: derived, rule: "end_date - start_date" }
+  - { name: days_until_departure,   type: int,    source: derived, rule: "start_date - today" }
+  - { name: trip_type,              type: enum,   source: derived, values: [DOMESTIC, INTERNATIONAL] }
+  - { name: purpose,                type: string, source: ask, prompt_hint: "business purpose", optional: true }
+  - { name: hotel_rate_per_night,   type: number, source: ask, prompt_hint: "nightly hotel rate" }
+  - { name: travel_cost_estimate,   type: number, source: derived, rule: "fare_table lookup by route" }
+  - { name: total_estimated_cost,   type: number, source: derived, rule: "hotel_rate_per_night * nights + travel_cost_estimate" }
+  - { name: booking_status,         type: enum,   source: derived, default: NOT_BOOKED, values: [NOT_BOOKED, BOOKED] }
+
+exception_profile:
+  allowed: true
+  default_expiry: end_date
+  requires_evidence: true
+
+# Reference fare table so total_estimated_cost is deterministic in the demo.
+reference_data:
+  tier1_cities: [Mumbai, Delhi, Bengaluru, Hyderabad, Chennai, Kolkata, Pune]
+  fare_table:
+    "Mumbai->Bengaluru": 9000
+    "Mumbai->Delhi": 11000
+    "Bengaluru->Mumbai": 9000
+    "Pune->Delhi": 10500
+    "default": 8000

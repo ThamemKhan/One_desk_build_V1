@@ -1,0 +1,77 @@
+# Deterministic rules for SVC-ACCESS.
+rules:
+
+  - id: RULE-SEC-PRIV-GRADE
+    service_id: SVC-ACCESS
+    policy_id: POL-SEC-311
+    clause_ref: POL-SEC-311§2.4
+    description: Privileged production access requires grade G5 or above.
+    when: { field: access_level, op: eq, value: PRIVILEGED }
+    assert: { field: employee_grade_rank, op: gte, value: 5 }
+    on_violation:
+      exceptionable: false
+      severity: CRITICAL
+      hard_block: true
+      tier_override: 4
+      message: >-
+        Request declined and referred to the reporting manager.
+        Below-grade privileged access cannot be granted or excepted.
+
+  - id: RULE-SEC-NO-AUTO-GRANT
+    service_id: SVC-ACCESS
+    policy_id: POL-SEC-311
+    clause_ref: POL-SEC-311§2.7
+    description: Privileged access is never granted by an automated process.
+    when: { field: access_level, op: eq, value: PRIVILEGED }
+    assert: { field: requires_named_human_approver, op: eq, value: true }
+    on_violation:
+      exceptionable: false
+      severity: CRITICAL
+      hard_block: true
+      tier_override: 4
+
+  - id: RULE-SEC-PROD-CUSTODIAN
+    service_id: SVC-ACCESS
+    policy_id: POL-SEC-204
+    clause_ref: POL-SEC-204§4.2
+    description: Production data store access is approved by the Data Custodian and may not be delegated.
+    when: { field: target_environment, op: eq, value: PRODUCTION }
+    assert: { field: approver_department_id, op: eq, value: DEPT-DG }
+    on_violation:
+      exceptionable: false
+      severity: HIGH
+      routing_correction: true
+      approver_department_id: DEPT-DG
+      approver_clause_ref: POL-SEC-204§4.2
+      message: >-
+        Routing correction, not a policy breach. The request is assigned to a
+        department that does not hold approval authority under the governing policy.
+
+  - id: RULE-SEC-ACCESS-EXPIRY
+    service_id: SVC-ACCESS
+    policy_id: POL-SEC-204
+    clause_ref: POL-SEC-204§5.1
+    description: Production access must be time-bound and not exceed 90 days.
+    when: { field: target_environment, op: eq, value: PRODUCTION }
+    assert: { field: access_duration_days, op: lte, value: 90 }
+    on_violation:
+      exceptionable: true
+      severity: MEDIUM
+      approver_department_id: DEPT-SEC
+      approver_clause_ref: POL-SEC-204§7.2
+      compensating_controls:
+        - "Access capped at 90 days with mandatory recertification (POL-SEC-311§3.1)"
+
+  - id: RULE-SEC-HR-NOT-REQUIRED
+    service_id: SVC-ACCESS
+    policy_id: POL-SEC-204
+    clause_ref: POL-SEC-204§4.3
+    description: HR approval is not required for the grant of technical system access.
+    when: { field: assigned_department_id, op: eq, value: DEPT-HR }
+    assert: { field: assigned_department_id, op: neq, value: DEPT-HR }
+    on_violation:
+      exceptionable: false
+      severity: MEDIUM
+      routing_correction: true
+      message: >-
+        HR performs employment verification only. Approval authority does not sit with HR.

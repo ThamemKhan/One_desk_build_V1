@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements)",
+      "PowerShell(Test-NetConnection -ComputerName api.winget.microsoft.com -Port 443 -WarningAction SilentlyContinue)",
+      "PowerShell(Test-NetConnection -ComputerName github.com -Port 443 -WarningAction SilentlyContinue)"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+# SCENARIO C — THE LIVE SERVICE ADDITION.
+# Ships DISABLED. During the demo, set enabled: true and POST /api/services/reload.
+# The intelligence layer must handle this service with ZERO code changes.
+id: SVC-SOFTWARE
+name: Software Licence Request
+enabled: false
+intent: SOFTWARE_REQUEST
+description: Commercial software licences and SaaS subscriptions.
+utterance_examples:
+  - "I need a Figma licence for the design team"
+  - "can we get a subscription to the analytics tool"
+base_tier: 2
+connector: internal
+sla_hours: 40
+owning_department_id: DEPT-IT
+policies: [POL-IT-330, POL-SEC-204, POL-FIN-220]
+rules_file: rules/software.yaml
+
+fields:
+  - { name: employee_id,              type: string, source: context, from: session.employee_id }
+  - { name: cost_center,              type: string, source: context, from: employee.cost_center }
+  - { name: manager_id,               type: string, source: context, from: employee.manager_id }
+  - { name: product_name,             type: string, source: ask, prompt_hint: "which product" }
+  - { name: licence_type,             type: enum,   source: ask, values: [PERPETUAL, SUBSCRIPTION] }
+  - { name: seats,                    type: int,    source: ask, default: 1 }
+  - { name: monthly_cost_per_seat,    type: number, source: ask, prompt_hint: "monthly cost per seat" }
+  - { name: annualised_value,         type: number, source: derived, rule: "monthly_cost_per_seat * seats * 12" }
+  - { name: processes_customer_data,  type: bool,   source: ask, prompt_hint: "does it process customer data" }
+  - { name: security_review_completed,type: bool,   source: derived, default: false }
+  - { name: approver_department_id,   type: string, source: derived, rule: "ownership graph resolution" }
+
+exception_profile:
+  allowed: true
+  default_expiry: "+365d"
+  requires_evidence: false

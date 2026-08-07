@@ -1,0 +1,45 @@
+id: SVC-ACCESS
+name: System Access Request
+enabled: true
+intent: ACCESS_REQUEST
+description: Access to enterprise systems, applications and data stores.
+utterance_examples:
+  - "I need access to the production database"
+  - "can I get read access to the customer data warehouse"
+  - "requesting prod DB access for an incident investigation"
+base_tier: 3
+connector: internal
+sla_hours: 16
+owning_department_id: DEPT-SEC
+policies: [POL-SEC-204, POL-SEC-311, POL-DG-090, POL-IT-330, POL-HR-118]
+rules_file: rules/access.yaml
+
+fields:
+  - { name: employee_id,                  type: string, source: context, from: session.employee_id }
+  - { name: employee_grade,               type: string, source: context, from: employee.grade }
+  - { name: employee_grade_rank,          type: int,    source: derived, rule: "int(grade[1:])" }
+  - { name: manager_id,                   type: string, source: context, from: employee.manager_id }
+  - { name: target_system,                type: string, source: ask, prompt_hint: "which system" }
+  - { name: target_environment,           type: enum,   source: ask, values: [DEV, STAGING, PRODUCTION] }
+  - { name: data_domain,                  type: string, source: derived, rule: "system_domain_map lookup" }
+  - { name: access_level,                 type: enum,   source: ask, values: [READ, WRITE, PRIVILEGED] }
+  - { name: business_justification,       type: string, source: ask, prompt_hint: "business reason" }
+  - { name: access_duration_days,         type: int,    source: ask, default: 30 }
+  - { name: assigned_department_id,       type: string, source: derived, rule: "current routing rule for SVC-ACCESS" }
+  - { name: approver_department_id,       type: string, source: derived, rule: "ownership graph resolution" }
+  - { name: requires_named_human_approver,type: bool,   source: derived, default: true }
+
+exception_profile:
+  allowed: true
+  default_expiry: "start + access_duration_days"
+  requires_evidence: true
+  max_duration_days: 90
+
+reference_data:
+  system_domain_map:
+    "production database": CUSTOMER_DATA
+    "customer data warehouse": CUSTOMER_DATA
+    "billing system": FINANCIAL_DATA
+  data_custodian_by_domain:
+    CUSTOMER_DATA: EMP-203
+    FINANCIAL_DATA: EMP-205

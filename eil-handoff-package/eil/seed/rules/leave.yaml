@@ -1,0 +1,44 @@
+# Deterministic rules for SVC-LEAVE. The low-tier control case.
+rules:
+
+  - id: RULE-HR-LEAVE-BALANCE
+    service_id: SVC-LEAVE
+    policy_id: POL-HR-118
+    clause_ref: POL-HR-118§3.5
+    description: Leave may not exceed the accrued balance.
+    when: { field: leave_type, op: eq, value: ANNUAL }
+    assert: { field: requested_days, op: lte, value_by: { key: context.leave_balance_days } }
+    on_violation:
+      exceptionable: true
+      severity: LOW
+      approver_department_id: DEPT-HR
+      approver_clause_ref: POL-HR-118§3.5
+      compensating_controls:
+        - "Negative balance recorded against next accrual period"
+
+  - id: RULE-HR-LEAVE-AUTOAPPROVE
+    service_id: SVC-LEAVE
+    policy_id: POL-HR-118
+    clause_ref: POL-HR-118§3.2
+    description: Three working days or fewer with sufficient balance may be auto-approved.
+    when: { field: leave_type, op: eq, value: ANNUAL }
+    assert: { field: requested_days, op: lte, value: 3 }
+    on_violation:
+      exceptionable: false
+      severity: LOW
+      adds_approval: true
+      approver_role: REPORTING_MANAGER
+      approver_clause_ref: POL-HR-118§3.2
+      message: Longer than the auto-approval window; reporting manager approval required.
+
+  - id: RULE-HR-LEAVE-NOTICE
+    service_id: SVC-LEAVE
+    policy_id: POL-HR-118
+    clause_ref: POL-HR-118§3.9
+    description: Leave over five days requires fourteen days notice.
+    when: { field: requested_days, op: gt, value: 5 }
+    assert: { field: days_until_start, op: gte, value: 14 }
+    on_violation:
+      exceptionable: true
+      severity: LOW
+      approver_role: REPORTING_MANAGER

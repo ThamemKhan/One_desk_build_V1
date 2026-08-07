@@ -1,0 +1,71 @@
+# Deterministic rules for SVC-TRAVEL. Evaluated in pure Python. Never by an LLM.
+rules:
+
+  - id: RULE-TRV-PREAPPROVAL
+    service_id: SVC-TRAVEL
+    policy_id: POL-TRV-101
+    clause_ref: POL-TRV-101§2.1
+    description: Business travel must be approved before booking.
+    when: { field: booking_status, op: eq, value: NOT_BOOKED }
+    assert: { field: booking_status, op: eq, value: NOT_BOOKED }
+    on_violation:
+      exceptionable: false
+      severity: HIGH
+      message: Travel already booked without prior approval; reimbursement is discretionary.
+
+  - id: RULE-TRV-HOTEL-CAP
+    service_id: SVC-TRAVEL
+    policy_id: POL-TRV-101
+    clause_ref: POL-TRV-101§5.3
+    description: Nightly lodging must not exceed the destination city-tier cap.
+    when: { field: destination_city_tier, op: in, value: [1, 2] }
+    assert:
+      field: hotel_rate_per_night
+      op: lte
+      value_by:
+        key: destination_city_tier
+        map: { 1: 10000, 2: 8000 }
+    on_violation:
+      exceptionable: true
+      severity: MEDIUM
+      approver_department_id: DEPT-TRV
+      approver_clause_ref: POL-TRV-101§5.7
+      required_evidence:
+        - NO_COMPLIANT_AVAILABILITY
+      compensating_controls:
+        - "Attach dated evidence of no compliant inventory within 5 km (POL-TRV-101§5.8)"
+        - "Approved nights capped at the requested trip duration"
+        - "Exception expires at end of travel period (POL-TRV-101§5.7)"
+
+  - id: RULE-TRV-ADVANCE-BOOKING
+    service_id: SVC-TRAVEL
+    policy_id: POL-TRV-101
+    clause_ref: POL-TRV-101§6.2
+    description: Domestic travel should be booked at least seven days in advance.
+    when: { field: trip_type, op: eq, value: DOMESTIC }
+    assert: { field: days_until_departure, op: gte, value: 7 }
+    on_violation:
+      exceptionable: true
+      severity: LOW
+      approver_department_id: DEPT-TRV
+      approver_clause_ref: POL-TRV-101§5.7
+      compensating_controls:
+        - "Short-notice booking flagged for Travel Operations review"
+
+  - id: RULE-FIN-HIGH-VALUE
+    service_id: SVC-TRAVEL
+    policy_id: POL-FIN-220
+    clause_ref: POL-FIN-220§3.1
+    description: Committed spend above INR 25,000 additionally requires Finance authorisation.
+    when: { field: total_estimated_cost, op: exists }
+    assert: { field: total_estimated_cost, op: lte, value: 25000 }
+    on_violation:
+      exceptionable: false
+      severity: MEDIUM
+      adds_approval: true
+      approver_department_id: DEPT-FIN
+      approver_clause_ref: POL-FIN-220§3.1
+      sequence_after: DEPT-TRV
+      message: >-
+        This is not a policy breach. It is an additional required authorisation.
+        Functional approval is obtained first (POL-FIN-220§3.4).

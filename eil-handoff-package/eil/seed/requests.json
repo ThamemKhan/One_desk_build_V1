@@ -1,0 +1,2326 @@
+[
+  {
+    "id": "REQ-10201",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "WRITE",
+      "access_duration_days": 60,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-08-02T10:30:00",
+    "updated_at": "2026-08-04T10:30:00",
+    "closed_at": null,
+    "age_days": 5,
+    "history": [
+      {
+        "at": "2026-08-02T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-08-04T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-08-05T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-08-05T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-08-05T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10202",
+    "employee_id": "EMP-108",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-HR",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 90,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-25T10:30:00",
+    "updated_at": "2026-07-26T10:30:00",
+    "closed_at": null,
+    "age_days": 13,
+    "history": [
+      {
+        "at": "2026-07-25T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-26T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10203",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-IT",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "WRITE",
+      "access_duration_days": 90,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-13T10:30:00",
+    "updated_at": "2026-07-14T10:30:00",
+    "closed_at": null,
+    "age_days": 25,
+    "history": [
+      {
+        "at": "2026-07-13T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-14T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-16T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-16T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-16T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10204",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-HR",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 90,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-21T10:30:00",
+    "updated_at": "2026-07-22T10:30:00",
+    "closed_at": null,
+    "age_days": 17,
+    "history": [
+      {
+        "at": "2026-07-21T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-22T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-23T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10205",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-21T10:30:00",
+    "updated_at": "2026-07-22T10:30:00",
+    "closed_at": null,
+    "age_days": 17,
+    "history": [
+      {
+        "at": "2026-07-21T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-22T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-23T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10206",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-30T10:30:00",
+    "updated_at": "2026-07-31T10:30:00",
+    "closed_at": null,
+    "age_days": 8,
+    "history": [
+      {
+        "at": "2026-07-30T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-31T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-08-01T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-08-02T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-08-02T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-08-02T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10207",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "EMAIL",
+    "tier": 3,
+    "assigned_department_id": "DEPT-IT",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 60,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-12T10:30:00",
+    "updated_at": "2026-07-14T10:30:00",
+    "closed_at": null,
+    "age_days": 26,
+    "history": [
+      {
+        "at": "2026-07-12T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-13T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-14T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10208",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "EMAIL",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "customer data warehouse",
+      "target_environment": "PRODUCTION",
+      "access_level": "WRITE",
+      "access_duration_days": 30,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-17T10:30:00",
+    "updated_at": "2026-07-19T10:30:00",
+    "closed_at": null,
+    "age_days": 21,
+    "history": [
+      {
+        "at": "2026-07-17T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-19T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-20T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-20T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-20T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10209",
+    "employee_id": "EMP-108",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "WRITE",
+      "access_duration_days": 30,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-15T10:30:00",
+    "updated_at": "2026-07-16T10:30:00",
+    "closed_at": null,
+    "age_days": 23,
+    "history": [
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-16T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-17T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10210",
+    "employee_id": "EMP-102",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-HR",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 60,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-28T10:30:00",
+    "updated_at": "2026-07-30T10:30:00",
+    "closed_at": null,
+    "age_days": 10,
+    "history": [
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-29T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-30T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-31T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-31T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-31T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10211",
+    "employee_id": "EMP-102",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "WRITE",
+      "access_duration_days": 90,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-31T10:30:00",
+    "updated_at": "2026-08-03T10:30:00",
+    "closed_at": null,
+    "age_days": 7,
+    "history": [
+      {
+        "at": "2026-07-31T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-08-01T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-08-02T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10212",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "BLOCKED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-IT",
+    "pending_approver_id": null,
+    "stuck_reason_code": "OWNERSHIP_CYCLE",
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 60,
+      "business_justification": "Incident investigation and data reconciliation"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-18T10:30:00",
+    "updated_at": "2026-07-19T10:30:00",
+    "closed_at": null,
+    "age_days": 20,
+    "history": [
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR",
+        "note": "Initial routing per ACCESS intake rule"
+      },
+      {
+        "at": "2026-07-19T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC",
+        "note": "HR: security review required (POL-HR-118\u00a77.1)"
+      },
+      {
+        "at": "2026-07-20T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG",
+        "note": "Security: data custodian approves production data (POL-SEC-204\u00a74.2)"
+      },
+      {
+        "at": "2026-07-21T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-DG",
+        "to": "DEPT-IT",
+        "note": "Data Governance: delegated to application owner (POL-DG-090\u00a72.2)"
+      },
+      {
+        "at": "2026-07-21T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-IT",
+        "to": "DEPT-HR",
+        "note": "IT: access requests must be raised via HR (POL-IT-330\u00a73.4)"
+      },
+      {
+        "at": "2026-07-21T10:30:00",
+        "event": "BLOCKED",
+        "note": "No department accepted approval ownership"
+      }
+    ],
+    "reassignment_count": 4,
+    "demo_note": "Deadlock cohort. Reroutes to DEPT-DG when the proposed rule is approved."
+  },
+  {
+    "id": "REQ-10213",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-29T10:30:00",
+    "updated_at": "2026-07-05T10:30:00",
+    "closed_at": "2026-07-12T10:30:00",
+    "age_days": 11,
+    "history": [
+      {
+        "at": "2026-06-29T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-07-01T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-07-04T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-07-07T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-07-08T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 3,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10214",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "customer data warehouse",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-10T10:30:00",
+    "updated_at": "2026-06-24T10:30:00",
+    "closed_at": "2026-06-24T10:30:00",
+    "age_days": 13,
+    "history": [
+      {
+        "at": "2026-06-10T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-06-12T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-06-15T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-06-18T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-06-19T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 2,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10215",
+    "employee_id": "EMP-102",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-05-31T10:30:00",
+    "updated_at": "2026-06-14T10:30:00",
+    "closed_at": "2026-06-13T10:30:00",
+    "age_days": 13,
+    "history": [
+      {
+        "at": "2026-05-31T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-06-02T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-06-05T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-06-08T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-06-09T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 2,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10216",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-07T10:30:00",
+    "updated_at": "2026-07-20T10:30:00",
+    "closed_at": "2026-07-18T10:30:00",
+    "age_days": 9,
+    "history": [
+      {
+        "at": "2026-07-07T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-07-09T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-07-12T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-07-15T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-07-16T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 3,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10217",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-11T10:30:00",
+    "updated_at": "2026-06-23T10:30:00",
+    "closed_at": "2026-06-19T10:30:00",
+    "age_days": 11,
+    "history": [
+      {
+        "at": "2026-06-11T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-06-13T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-06-16T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-06-19T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-06-20T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 2,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10218",
+    "employee_id": "EMP-108",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "customer data warehouse",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-20T10:30:00",
+    "updated_at": "2026-07-02T10:30:00",
+    "closed_at": "2026-06-28T10:30:00",
+    "age_days": 6,
+    "history": [
+      {
+        "at": "2026-06-20T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-06-22T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-06-25T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-06-28T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-06-29T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 2,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10219",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-02T10:30:00",
+    "updated_at": "2026-07-13T10:30:00",
+    "closed_at": "2026-07-12T10:30:00",
+    "age_days": 7,
+    "history": [
+      {
+        "at": "2026-07-02T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-07-04T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-07-07T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-07-10T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-07-11T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 3,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10220",
+    "employee_id": "EMP-108",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-DG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "billing system",
+      "target_environment": "PRODUCTION",
+      "access_level": "READ",
+      "access_duration_days": 30,
+      "business_justification": "Reporting and analysis"
+    },
+    "missing_fields": [],
+    "created_at": "2026-05-30T10:30:00",
+    "updated_at": "2026-06-11T10:30:00",
+    "closed_at": "2026-06-06T10:30:00",
+    "age_days": 9,
+    "history": [
+      {
+        "at": "2026-05-30T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-HR"
+      },
+      {
+        "at": "2026-06-01T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-HR",
+        "to": "DEPT-SEC"
+      },
+      {
+        "at": "2026-06-04T10:30:00",
+        "event": "REASSIGNED",
+        "from": "DEPT-SEC",
+        "to": "DEPT-DG"
+      },
+      {
+        "at": "2026-06-07T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-203"
+      },
+      {
+        "at": "2026-06-08T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 3,
+    "demo_note": "Eventually correct, but only after manual escalation. Evidence for the bottleneck claim."
+  },
+  {
+    "id": "REQ-10221",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "REJECTED",
+    "channel": "WEB",
+    "tier": 4,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "PRIVILEGED",
+      "access_duration_days": 30,
+      "business_justification": "Schema change for feature work"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-27T10:30:00",
+    "updated_at": "2026-07-27T10:30:00",
+    "closed_at": "2026-07-27T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "HARD_BLOCK",
+        "note": "Grade G3 below G5 threshold (POL-SEC-311\u00a72.4). Referred to manager."
+      }
+    ],
+    "reassignment_count": 0,
+    "demo_note": "Tier 4. Proves the system declines correctly and instantly, without an LLM judgement call."
+  },
+  {
+    "id": "REQ-10222",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-ACCESS",
+    "intent": "ACCESS_REQUEST",
+    "status": "REJECTED",
+    "channel": "WEB",
+    "tier": 4,
+    "assigned_department_id": "DEPT-SEC",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "target_system": "production database",
+      "target_environment": "PRODUCTION",
+      "access_level": "PRIVILEGED",
+      "access_duration_days": 30,
+      "business_justification": "Schema change for feature work"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-06T10:30:00",
+    "updated_at": "2026-07-06T10:30:00",
+    "closed_at": "2026-07-06T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-06T10:30:00",
+        "event": "HARD_BLOCK",
+        "note": "Grade G3 below G5 threshold (POL-SEC-311\u00a72.4). Referred to manager."
+      }
+    ],
+    "reassignment_count": 0,
+    "demo_note": "Tier 4. Proves the system declines correctly and instantly, without an LLM judgement call."
+  },
+  {
+    "id": "REQ-10223",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Bengaluru",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 12000,
+      "total_estimated_cost": 45000,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-25T10:30:00",
+    "updated_at": "2026-06-26T10:30:00",
+    "closed_at": "2026-06-27T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-06-25T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-06-26T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": true
+  },
+  {
+    "id": "REQ-10224",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Delhi",
+      "destination_city_tier": 1,
+      "nights": 2,
+      "hotel_rate_per_night": 9400,
+      "total_estimated_cost": 27800,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-26T10:30:00",
+    "updated_at": "2026-07-27T10:30:00",
+    "closed_at": "2026-07-28T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-26T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10225",
+    "employee_id": "EMP-108",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Bengaluru",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 8200,
+      "total_estimated_cost": 33600,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-08T10:30:00",
+    "updated_at": "2026-07-09T10:30:00",
+    "closed_at": "2026-07-10T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-08T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-09T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10226",
+    "employee_id": "EMP-102",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Bengaluru",
+      "destination_city_tier": 1,
+      "nights": 4,
+      "hotel_rate_per_night": 6500,
+      "total_estimated_cost": 35000,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-26T10:30:00",
+    "updated_at": "2026-06-27T10:30:00",
+    "closed_at": "2026-06-28T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-06-26T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-06-27T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10227",
+    "employee_id": "EMP-105",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 3,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Kolkata",
+      "destination_city_tier": 1,
+      "nights": 4,
+      "hotel_rate_per_night": 11500,
+      "total_estimated_cost": 55000,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-10T10:30:00",
+    "updated_at": "2026-07-11T10:30:00",
+    "closed_at": "2026-07-12T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-10T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-11T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": true
+  },
+  {
+    "id": "REQ-10228",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Kolkata",
+      "destination_city_tier": 1,
+      "nights": 4,
+      "hotel_rate_per_night": 9400,
+      "total_estimated_cost": 46600,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-04T10:30:00",
+    "updated_at": "2026-07-05T10:30:00",
+    "closed_at": "2026-07-06T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-04T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-05T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10229",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Kolkata",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 6500,
+      "total_estimated_cost": 28500,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-06T10:30:00",
+    "updated_at": "2026-07-07T10:30:00",
+    "closed_at": "2026-07-08T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-06T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-07T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10230",
+    "employee_id": "EMP-102",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Bengaluru",
+      "destination_city_tier": 1,
+      "nights": 2,
+      "hotel_rate_per_night": 6500,
+      "total_estimated_cost": 22000,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-09T10:30:00",
+    "updated_at": "2026-07-10T10:30:00",
+    "closed_at": "2026-07-11T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-09T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-10T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10231",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 3,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Hyderabad",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 11500,
+      "total_estimated_cost": 43500,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-28T10:30:00",
+    "updated_at": "2026-07-29T10:30:00",
+    "closed_at": "2026-07-30T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-29T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": true
+  },
+  {
+    "id": "REQ-10232",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Hyderabad",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 8200,
+      "total_estimated_cost": 33600,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-22T10:30:00",
+    "updated_at": "2026-06-23T10:30:00",
+    "closed_at": "2026-06-24T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-06-22T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-06-23T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10233",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "PENDING_APPROVAL",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": "EMP-206",
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Chennai",
+      "destination_city_tier": 1,
+      "nights": 3,
+      "hotel_rate_per_night": 8200,
+      "total_estimated_cost": 33600,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-08-04T10:30:00",
+    "updated_at": "2026-08-05T10:30:00",
+    "closed_at": null,
+    "age_days": 3,
+    "history": [
+      {
+        "at": "2026-08-04T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-08-05T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10234",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Bengaluru",
+      "destination_city_tier": 1,
+      "nights": 4,
+      "hotel_rate_per_night": 8200,
+      "total_estimated_cost": 41800,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-18T10:30:00",
+    "updated_at": "2026-07-19T10:30:00",
+    "closed_at": "2026-07-20T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-19T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10235",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 3,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Delhi",
+      "destination_city_tier": 1,
+      "nights": 4,
+      "hotel_rate_per_night": 13000,
+      "total_estimated_cost": 61000,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-18T10:30:00",
+    "updated_at": "2026-07-19T10:30:00",
+    "closed_at": "2026-07-20T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-18T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-19T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": true
+  },
+  {
+    "id": "REQ-10236",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-TRAVEL",
+    "intent": "TRAVEL_BOOKING",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 2,
+    "assigned_department_id": "DEPT-TRV",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "destination_city": "Hyderabad",
+      "destination_city_tier": 1,
+      "nights": 2,
+      "hotel_rate_per_night": 8200,
+      "total_estimated_cost": 25400,
+      "trip_type": "DOMESTIC",
+      "purpose": "Client meeting"
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-27T10:30:00",
+    "updated_at": "2026-07-28T10:30:00",
+    "closed_at": "2026-07-29T10:30:00",
+    "age_days": 2,
+    "history": [
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-TRV"
+      },
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "APPROVED",
+        "by": "EMP-206"
+      }
+    ],
+    "reassignment_count": 0,
+    "has_exception": false
+  },
+  {
+    "id": "REQ-10237",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 7
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-28T10:30:00",
+    "updated_at": "2026-07-28T10:30:00",
+    "closed_at": "2026-07-29T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-28T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10238",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 3
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-27T10:30:00",
+    "updated_at": "2026-07-27T10:30:00",
+    "closed_at": "2026-07-27T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-27T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10239",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 5
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-22T10:30:00",
+    "updated_at": "2026-07-22T10:30:00",
+    "closed_at": "2026-07-23T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-07-22T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-22T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10240",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 2
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-14T10:30:00",
+    "updated_at": "2026-07-14T10:30:00",
+    "closed_at": "2026-07-14T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-14T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-14T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10241",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 5
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-17T10:30:00",
+    "updated_at": "2026-07-17T10:30:00",
+    "closed_at": "2026-07-18T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-07-17T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-17T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10242",
+    "employee_id": "EMP-103",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 5
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-04T10:30:00",
+    "updated_at": "2026-07-04T10:30:00",
+    "closed_at": "2026-07-05T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-07-04T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-04T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10243",
+    "employee_id": "EMP-101",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 3
+    },
+    "missing_fields": [],
+    "created_at": "2026-08-03T10:30:00",
+    "updated_at": "2026-08-03T10:30:00",
+    "closed_at": "2026-08-03T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-08-03T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10244",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 2
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-21T10:30:00",
+    "updated_at": "2026-06-21T10:30:00",
+    "closed_at": "2026-06-21T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-06-21T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-06-21T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10245",
+    "employee_id": "EMP-107",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 5
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-23T10:30:00",
+    "updated_at": "2026-07-23T10:30:00",
+    "closed_at": "2026-07-24T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-07-23T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-23T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10246",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 5
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-23T10:30:00",
+    "updated_at": "2026-06-23T10:30:00",
+    "closed_at": "2026-06-24T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-06-23T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-06-23T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10247",
+    "employee_id": "EMP-104",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 7
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-24T10:30:00",
+    "updated_at": "2026-06-24T10:30:00",
+    "closed_at": "2026-06-25T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-06-24T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-06-24T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10248",
+    "employee_id": "EMP-105",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "TEAMS",
+    "tier": 2,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 7
+    },
+    "missing_fields": [],
+    "created_at": "2026-06-19T10:30:00",
+    "updated_at": "2026-06-19T10:30:00",
+    "closed_at": "2026-06-20T10:30:00",
+    "age_days": 1,
+    "history": [
+      {
+        "at": "2026-06-19T10:30:00",
+        "event": "ROUTED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-06-19T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10249",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "SLACK",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 1
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-06T10:30:00",
+    "updated_at": "2026-07-06T10:30:00",
+    "closed_at": "2026-07-06T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-06T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-06T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  },
+  {
+    "id": "REQ-10250",
+    "employee_id": "EMP-106",
+    "service_id": "SVC-LEAVE",
+    "intent": "LEAVE_REQUEST",
+    "status": "CLOSED",
+    "channel": "WEB",
+    "tier": 1,
+    "assigned_department_id": "DEPT-ENG",
+    "pending_approver_id": null,
+    "stuck_reason_code": null,
+    "payload": {
+      "leave_type": "ANNUAL",
+      "requested_days": 1
+    },
+    "missing_fields": [],
+    "created_at": "2026-07-24T10:30:00",
+    "updated_at": "2026-07-24T10:30:00",
+    "closed_at": "2026-07-24T10:30:00",
+    "age_days": 0,
+    "history": [
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "AUTO_APPROVED",
+        "to": "DEPT-ENG"
+      },
+      {
+        "at": "2026-07-24T10:30:00",
+        "event": "CLOSED"
+      }
+    ],
+    "reassignment_count": 0
+  }
+]

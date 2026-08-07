@@ -1,0 +1,45 @@
+# Rules for SVC-SOFTWARE. Loaded only when the service is enabled (Scenario C).
+rules:
+
+  - id: RULE-IT-SW-APPROVER
+    service_id: SVC-SOFTWARE
+    policy_id: POL-IT-330
+    clause_ref: POL-IT-330§5.1
+    description: Software licence requests are approved by IT Platform.
+    when: { field: licence_type, op: exists }
+    assert: { field: approver_department_id, op: eq, value: DEPT-IT }
+    on_violation:
+      exceptionable: false
+      severity: LOW
+      routing_correction: true
+      approver_department_id: DEPT-IT
+
+  - id: RULE-SEC-SW-DATA-REVIEW
+    service_id: SVC-SOFTWARE
+    policy_id: POL-SEC-204
+    clause_ref: POL-SEC-204§4.6
+    description: Tools processing customer personal data require a security review.
+    when: { field: processes_customer_data, op: eq, value: true }
+    assert: { field: security_review_completed, op: eq, value: true }
+    on_violation:
+      exceptionable: false
+      severity: HIGH
+      adds_approval: true
+      approver_department_id: DEPT-SEC
+      approver_clause_ref: POL-SEC-204§4.6
+      sequence_after: DEPT-IT
+
+  - id: RULE-FIN-HIGH-VALUE-SW
+    service_id: SVC-SOFTWARE
+    policy_id: POL-FIN-220
+    clause_ref: POL-FIN-220§5.2
+    description: Recurring licences are assessed on annualised value against the high-value threshold.
+    when: { field: annualised_value, op: exists }
+    assert: { field: annualised_value, op: lte, value: 25000 }
+    on_violation:
+      exceptionable: false
+      severity: MEDIUM
+      adds_approval: true
+      approver_department_id: DEPT-FIN
+      approver_clause_ref: POL-FIN-220§3.1
+      sequence_after: DEPT-IT

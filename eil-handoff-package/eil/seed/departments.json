@@ -1,0 +1,10 @@
+[
+  { "id": "DEPT-HR",  "name": "Human Resources",       "head_employee_id": "EMP-201" },
+  { "id": "DEPT-SEC", "name": "Information Security",  "head_employee_id": "EMP-202" },
+  { "id": "DEPT-DG",  "name": "Data Governance",       "head_employee_id": "EMP-203" },
+  { "id": "DEPT-IT",  "name": "IT Platform",           "head_employee_id": "EMP-204" },
+  { "id": "DEPT-FIN", "name": "Finance",               "head_employee_id": "EMP-205" },
+  { "id": "DEPT-TRV", "name": "Travel Operations",     "head_employee_id": "EMP-206" },
+  { "id": "DEPT-ENG", "name": "Engineering",           "head_employee_id": "EMP-207" },
+  { "id": "DEPT-FAC", "name": "Facilities",            "head_employee_id": "EMP-208" }
+]
