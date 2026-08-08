@@ -58,7 +58,7 @@ def run(state: RequestState) -> dict:
     confidence = result.get("confidence") or 0.0
     gate = gate_intent_confidence(confidence)
 
-    return {
+    res = {
         "intent": result.get("intent"),
         "intent_confidence": confidence,
         "service_id": result.get("service_id"),
@@ -69,3 +69,6 @@ def run(state: RequestState) -> dict:
         # to communicate — however confident the new message is.
         "halt_reason": gate.halt_reason,
     }
+    if result.get("instruction_override_detected"):
+        res["instruction_override_detected"] = True
+    return res

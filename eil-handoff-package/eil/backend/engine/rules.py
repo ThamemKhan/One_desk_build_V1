@@ -48,7 +48,12 @@ class RuleResult:
 
 def _resolve(field_name: str, payload: dict, context: dict) -> Any:
     if field_name.startswith("context."):
-        return context.get(field_name[len("context."):])
+        key = field_name[len("context."):]
+        if key in context:
+            return context[key]
+        if "employee" in context and isinstance(context["employee"], dict) and key in context["employee"]:
+            return context["employee"][key]
+        return None
     return payload.get(field_name)
 
 

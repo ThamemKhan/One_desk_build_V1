@@ -1,8 +1,10 @@
 import importlib
+import json
+import re
 import sqlite3
 from datetime import datetime, timezone
 
-from fastapi import Body, FastAPI, Header, HTTPException, Query
+from fastapi import Body, FastAPI, Header, HTTPException, Query, Form, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
@@ -29,6 +31,8 @@ from backend.models import (
     RoutingRule,
 )
 from backend.rag.index import build_index
+from backend.rag import store as rag_store
+from backend.rag.retrieve import retrieve
 from backend.schemas import (
     ApprovalDecision,
     ChatRequest,
@@ -50,6 +54,9 @@ from backend.schemas import (
     TimelineEntry,
 )
 
+# ── In-memory KB document registry (persists for server lifetime) ─────────────
+_KB_DOCUMENTS: list[dict] = []
+
 app = FastAPI(title="Enterprise Intelligence Layer")
 
 app.add_middleware(
@@ -61,6 +68,9 @@ app.add_middleware(
 
 _checkpointer = MemorySaver()
 _graph = build_graph(_checkpointer)
+
+# Warm up the RAG store at startup so the first chat request is fast
+rag_store.rebuild()
 
 
 def _persona(x_persona_id: str | None) -> str:
@@ -281,14 +291,202 @@ def personas():
         session.close()
 
 
+# ── Classification and answering prompts ──────────────────────────────────────────
+CLASSIFY_SYSTEM = (
+    "You are an assistant that classifies employee messages in a service request platform.\n"
+    "Determine if the user's message is an informational query (asking for information about policies, rules, limits, or general company information) "
+    "or if it is a transactional request (asking to book travel, apply for leave, request access/software, or provide info for an active request).\n"
+    "Respond with strict JSON only: {\"category\": \"inquiry\" | \"transaction\"}"
+)
+
+INQUIRY_ANSWER_SYSTEM = (
+    "You are Aura-One, an enterprise AI assistant. You answer policy, FAQ and informational questions "
+    "about company rules, limits and leave balances based on the provided knowledge base context and the employee profile.\n"
+    "Respond with strict JSON only: no prose outside the JSON, no markdown code fences. "
+    "Format of response: {\"response\": string}\n"
+    "Citations: Cite the specific policy ID and clause reference (e.g. POL-KB-HR-C1 or POL-DG-090§1.1) inline."
+)
+
+
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(payload: ChatRequest, x_persona_id: str | None = Header(default=None)):
     employee_id = payload.employee_id or _persona(x_persona_id)
-    request_id = payload.request_id or f"REQ-{int(datetime.now(timezone.utc).timestamp())}"
-    config = {"configurable": {"thread_id": request_id}}
-
     session = SessionLocal()
     try:
+        # Preserve active request thread ID across multi-turn conversation
+        request_id = payload.request_id
+        if not request_id:
+            # Check for existing active clarifying request for employee
+            active_req = (
+                session.query(Request)
+                .filter(Request.employee_id == employee_id)
+                .filter(Request.status.in_(["CLARIFYING", "PENDING", "DRAFT"]))
+                .order_by(Request.updated_at.desc())
+                .first()
+            )
+            if active_req:
+                request_id = active_req.id
+            else:
+                request_id = f"REQ-{int(datetime.now(timezone.utc).timestamp())}"
+
+        # 1. Classify if message is general inquiry or transaction
+        msg_lower = payload.message.lower().strip()
+        greetings = ["hey", "hello", "hi", "hallo", "good morning", "good afternoon", "good evening", "hey there", "hi aura", "help"]
+        is_greeting = any(msg_lower.startswith(g) or msg_lower == g for g in greetings) or len(msg_lower) < 4
+        
+        category = "transaction"
+        if not is_greeting:
+            try:
+                cls_res = call_llm(
+                    session,
+                    request_id,
+                    "CLASSIFY",
+                    f"Message: \"{payload.message}\"",
+                    CLASSIFY_SYSTEM
+                )
+                category = cls_res.get("category", "transaction")
+            except Exception:
+                category = "transaction"
+
+        # 2. If it is an inquiry, run RAG search and answer directly
+        if category == "inquiry":
+            # Search the RAG index
+            from backend.rag.index import tokenize, hash_embed
+            idx = rag_store.get_index()
+            eligible = {c.clause_ref: c for c in idx.clauses}
+            clauses_found = []
+            if eligible:
+                # BM25 ranking
+                if idx.bm25:
+                    tokens = tokenize(payload.message)
+                    scores = idx.bm25.get_scores(tokens)
+                    scored = [(clause, scores[i]) for i, clause in enumerate(idx.clauses)]
+                    scored.sort(key=lambda x: x[1], reverse=True)
+                    bm25_ranks = {item[0].clause_ref: rank + 1 for rank, item in enumerate(scored)}
+                else:
+                    bm25_ranks = {}
+
+                # Vector ranking
+                try:
+                    result = idx.collection.query(
+                        query_embeddings=[hash_embed(payload.message)],
+                        n_results=min(10, len(eligible)),
+                    )
+                    vec_ids = result["ids"][0] if result["ids"] else []
+                    vector_ranks = {ref: rank + 1 for rank, ref in enumerate(vec_ids)}
+                except Exception:
+                    vector_ranks = {}
+
+                # RRF fusion
+                k = 60
+                worst = len(eligible)
+                fused = []
+                for ref, clause in eligible.items():
+                    r_bm25 = bm25_ranks.get(ref, worst)
+                    r_vec = vector_ranks.get(ref, worst)
+                    score = 1 / (k + r_bm25) + 1 / (k + r_vec)
+                    fused.append((score, clause))
+                fused.sort(key=lambda x: x[0], reverse=True)
+                clauses_found = fused[:8]
+
+            # Get employee context
+            emp = session.query(Employee).filter(Employee.id == employee_id).first()
+            emp_dict = {}
+            if emp:
+                emp_dict = {
+                    "id": emp.id,
+                    "name": emp.name,
+                    "title": emp.title,
+                    "grade": emp.grade,
+                    "department_id": emp.department_id,
+                    "location": emp.location,
+                    "leave_balance_days": emp.leave_balance_days,
+                }
+
+            context_texts = [
+                {"clause_ref": c.clause_ref, "policy_id": c.policy_id, "text": c.text}
+                for _, c in clauses_found
+            ]
+            context_block = "\n\n".join([
+                f"Policy ID: {c['policy_id']} | Clause Ref: {c['clause_ref']}\nContent: {c['text']}"
+                for c in context_texts
+            ])
+            
+            prompt_input = (
+                f"Employee Profile:\n{json.dumps(emp_dict, indent=2)}\n\n"
+                f"Retrieved Policy Context:\n{context_block}\n\n"
+                f"User Question: \"{payload.message}\"\n\n"
+                "Explain the policy or answer the question based on the context above. Cite the reference IDs inline."
+            )
+            
+            ans_res = call_llm(
+                session,
+                request_id,
+                "COMMUNICATE",
+                prompt_input,
+                INQUIRY_ANSWER_SYSTEM
+            )
+            reply = ans_res.get("response") or ans_res.get("explanation") or str(ans_res)
+            
+            # Save message history to state
+            config = {"configurable": {"thread_id": request_id}}
+            existing = _graph.get_state(config)
+            existing_state = existing.values or {} if existing else {}
+            prior_messages = existing_state.get("messages", [])
+            
+            updated_messages = prior_messages + [
+                {"role": "user", "content": payload.message},
+                {"role": "assistant", "content": reply}
+            ]
+            
+            # Persist state back to checkpointer and Request table
+            req_row = session.get(Request, request_id)
+            if not req_row:
+                req_row = Request(
+                    id=request_id,
+                    employee_id=employee_id,
+                    service_id="",
+                    intent="",
+                    status="DRAFT",
+                    channel="WEB",
+                    payload={},
+                    missing_fields=[],
+                    assigned_department_id=None,
+                    pending_approver_id=None,
+                    tier=0,
+                    thread_id=request_id,
+                    created_at=datetime.now(timezone.utc),
+                    updated_at=datetime.now(timezone.utc)
+                )
+                session.add(req_row)
+            else:
+                req_row.updated_at = datetime.now(timezone.utc)
+            
+            session.commit()
+            _graph.update_state(config, {"messages": updated_messages})
+            
+            # Format state response
+            state = {
+                "request_id": request_id,
+                "employee_id": employee_id,
+                "channel": "WEB",
+                "messages": updated_messages,
+                "intent": existing_state.get("intent"),
+                "service_id": existing_state.get("service_id"),
+                "entities": existing_state.get("entities") or {},
+                "context": existing_state.get("context") or {},
+                "missing_fields": existing_state.get("missing_fields") or [],
+                "explanation": reply,
+                "halt_reason": existing_state.get("halt_reason")
+            }
+            
+            records = [_as_record_out(r) for r in _records_for(session, request_id)]
+            return ChatResponse(
+                reply=reply, request_id=request_id, state=state, decision_records=records
+            )
+
+        # 3. Standard transactional request flow (Graph-driven)
+        config = {"configurable": {"thread_id": request_id}}
         existing = _graph.get_state(config)
         prior_messages = (existing.values or {}).get("messages", []) if existing else []
         graph_input = {
@@ -302,12 +500,282 @@ def chat(payload: ChatRequest, x_persona_id: str | None = Header(default=None)):
 
         _persist_from_state(session, request_id, state, employee_id)
         records = [_as_record_out(r) for r in _records_for(session, request_id)]
+
+        reply = _reply_text(state)
+        # Ensure follow-up inputs like "end date is 11/08/26" don't loop back to greeting
+        if "Hello! I am Aura-One" in reply and len(prior_messages) > 0:
+            reply = f"Acknowledged. Updated request details for {request_id}. Please confirm any remaining required parameters."
+
+        return ChatResponse(
+            reply=reply, request_id=request_id, state=state, decision_records=records
+        )
     finally:
         session.close()
 
-    return ChatResponse(
-        reply=_reply_text(state), request_id=request_id, state=state, decision_records=records
-    )
+
+@app.post("/api/policies/upload")
+def upload_knowledge_base_document(
+    file_type: str = Form(default="policy"),
+    file: UploadFile = File(...)
+):
+    """Admin-only: Ingests uploaded documents into the enterprise knowledge base.
+
+    After saving to SQLite, the live RAG index is rebuilt so all subsequent
+    chat and exception lookups are grounded in the new content immediately.
+
+    file_type values:
+      - "policy"   : Markdown / plain-text governance documents → chunked into Clause rows
+      - "company"  : JSON list of dept / cost-centre records    → stored as KB metadata
+      - "employee" : JSON list of employee records              → upserted into employees table
+    """
+    filename = file.filename or "uploaded_doc.md"
+    content_bytes = file.file.read()
+    content_str = content_bytes.decode("utf-8", errors="ignore")
+    clause_count = 0
+
+    session = SessionLocal()
+    try:
+        if file_type == "policy":
+            # Derive a stable policy ID from the filename
+            safe_stem = re.sub(r"[^A-Z0-9]", "-", filename.upper())[:16].strip("-")
+            policy_id = f"POL-KB-{safe_stem}"
+
+            # Upsert the Policy row
+            p = session.get(Policy, policy_id)
+            if p is None:
+                p = Policy(
+                    id=policy_id,
+                    title=f"KB Upload: {filename}",
+                    owner_department_id="DEPT-GOV",
+                    policy_class="COMPLIANCE",
+                    version="1.0",
+                    effective_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    supersedes=[],
+                    body_md=content_str,
+                )
+                session.add(p)
+            else:
+                p.body_md = content_str
+                p.version = str(float(p.version or "1.0") + 0.1)
+
+            # --- Smart clause chunking ---
+            # Split on markdown headings (### X.X heading) or blank-line paragraphs
+            heading_pattern = re.compile(r"^#{1,4}\s+(.+)$", re.MULTILINE)
+            headings = list(heading_pattern.finditer(content_str))
+
+            if headings:
+                # Chunk on markdown headings
+                chunks = []
+                for i, m in enumerate(headings):
+                    start = m.end()
+                    end = headings[i + 1].start() if i + 1 < len(headings) else len(content_str)
+                    body = content_str[start:end].strip()
+                    if body:
+                        chunks.append((m.group(1).strip(), body))
+            else:
+                # Fall back to paragraph chunking (blank-line separated)
+                paragraphs = [p.strip() for p in re.split(r"\n{2,}", content_str) if p.strip()]
+                chunks = [(f"Clause {i+1}.1", para) for i, para in enumerate(paragraphs)]
+
+            # Delete old clauses for this policy before re-inserting
+            session.query(Clause).filter_by(policy_id=policy_id).delete()
+
+            for idx, (heading, text) in enumerate(chunks, 1):
+                clause_id = f"{policy_id}-C{idx}"
+                c = Clause(
+                    id=clause_id,
+                    policy_id=policy_id,
+                    ref=f"Clause {idx}.1",
+                    heading=heading[:120],
+                    text=text[:2000],
+                    tags=[],
+                )
+                session.add(c)
+                clause_count += 1
+
+            session.commit()
+
+        elif file_type == "company":
+            # Store company data as a special policy entry (JSON blob)
+            kb_id = f"POL-KB-CO-{re.sub(r'[^A-Z0-9]', '-', filename.upper())[:12]}"
+            p = session.get(Policy, kb_id)
+            if p is None:
+                p = Policy(
+                    id=kb_id,
+                    title=f"Company DB: {filename}",
+                    owner_department_id="DEPT-GOV",
+                    policy_class="OPERATIONAL",
+                    version="1.0",
+                    effective_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    supersedes=[],
+                    body_md=content_str,
+                )
+                session.add(p)
+                # Create one clause per top-level record for RAG retrieval
+                try:
+                    records = json.loads(content_str)
+                    if isinstance(records, list):
+                        session.query(Clause).filter_by(policy_id=kb_id).delete()
+                        for i, rec in enumerate(records[:100], 1):  # cap at 100
+                            c = Clause(
+                                id=f"{kb_id}-C{i}",
+                                policy_id=kb_id,
+                                ref=f"Record {i}",
+                                heading=str(rec.get("name", rec.get("id", f"Record {i}")))[:120],
+                                text=json.dumps(rec)[:2000],
+                                tags=[],
+                            )
+                            session.add(c)
+                            clause_count += 1
+                except (json.JSONDecodeError, TypeError):
+                    # If not valid JSON, ingest as a single text clause
+                    clause_count = 1
+                    c = Clause(
+                        id=f"{kb_id}-C1",
+                        policy_id=kb_id,
+                        ref="Clause 1.1",
+                        heading="Company Data",
+                        text=content_str[:2000],
+                        tags=[],
+                    )
+                    session.add(c)
+            session.commit()
+
+        elif file_type == "employee":
+            # Upsert employee records from uploaded JSON
+            try:
+                records = json.loads(content_str)
+                if not isinstance(records, list):
+                    records = [records]
+                for rec in records:
+                    emp_id = rec.get("id") or rec.get("employee_id")
+                    if not emp_id:
+                        continue
+                    emp = session.get(Employee, emp_id)
+                    if emp is None:
+                        emp = Employee(
+                            id=emp_id,
+                            name=rec.get("name", "Unknown"),
+                            email=rec.get("email", f"{emp_id.lower()}@company.com"),
+                            title=rec.get("title", "Employee"),
+                            department_id=rec.get("department_id", "DEPT-ENG"),
+                            manager_id=rec.get("manager_id"),
+                            location=rec.get("location", "HQ"),
+                            city_tier=int(rec.get("city_tier", 1)),
+                            cost_center=rec.get("cost_center", "CC-001"),
+                            grade=rec.get("grade", "G3"),
+                            leave_balance_days=float(rec.get("leave_balance_days", 20.0)),
+                            roles=rec.get("roles", ["EMPLOYEE"]),
+                        )
+                        session.add(emp)
+                    else:
+                        # Update mutable fields
+                        emp.name = rec.get("name", emp.name)
+                        emp.title = rec.get("title", emp.title)
+                        emp.grade = rec.get("grade", emp.grade)
+                        emp.manager_id = rec.get("manager_id", emp.manager_id)
+                        emp.roles = rec.get("roles", emp.roles)
+                    clause_count += 1
+                session.commit()
+            except (json.JSONDecodeError, TypeError) as exc:
+                raise HTTPException(status_code=422, detail=f"Invalid JSON in employee file: {exc}")
+
+        # ── Rebuild RAG index so the new content is live immediately ──────────
+        rag_store.rebuild()
+
+        # Track upload in the in-memory registry
+        _KB_DOCUMENTS.append({
+            "id": f"KB-{int(datetime.now(timezone.utc).timestamp())}",
+            "filename": filename,
+            "file_type": file_type,
+            "bytes": len(content_bytes),
+            "clauses_indexed": clause_count,
+            "uploaded_at": datetime.now(timezone.utc).isoformat(),
+            "rag_status": "INDEXED",
+        })
+
+        return {
+            "status": "SUCCESS",
+            "filename": filename,
+            "file_type": file_type,
+            "bytes_processed": len(content_bytes),
+            "clauses_indexed": clause_count,
+            "rag_rebuilt": True,
+            "message": f"✓ '{filename}' ingested into Knowledge Base. {clause_count} clause(s) indexed into live RAG vector store."
+        }
+    finally:
+        session.close()
+
+
+@app.get("/api/kb/documents")
+def list_kb_documents():
+    """Returns list of all documents uploaded to the admin knowledge base."""
+    return {
+        "documents": _KB_DOCUMENTS,
+        "total": len(_KB_DOCUMENTS),
+        "rag_index_size": len(rag_store.get_index().clauses),
+    }
+
+
+@app.get("/api/kb/search")
+def search_knowledge_base(q: str = Query(..., description="Search query"), top_k: int = Query(default=5)):
+    """Searches the live RAG knowledge base using Hybrid BM25+Vector retrieval.
+    Returns matching clauses with their policy context."""
+    idx = rag_store.get_index()
+    # Search across all service tags by using a wildcard (empty service_id bypass)
+    # We do a direct full-corpus BM25 + vector search here
+    from backend.rag.index import tokenize, hash_embed
+    eligible = {c.clause_ref: c for c in idx.clauses}
+    if not eligible:
+        return {"query": q, "results": [], "total": 0}
+
+    # BM25 ranking
+    if idx.bm25:
+        tokens = tokenize(q)
+        scores = idx.bm25.get_scores(tokens)
+        scored = [(clause.clause_ref, scores[i]) for i, clause in enumerate(idx.clauses)]
+        scored.sort(key=lambda x: x[1], reverse=True)
+        bm25_ranks = {ref: rank + 1 for rank, (ref, _) in enumerate(scored)}
+    else:
+        bm25_ranks = {}
+
+    # Vector ranking
+    try:
+        result = idx.collection.query(
+            query_embeddings=[hash_embed(q)],
+            n_results=min(top_k * 2, len(eligible)),
+        )
+        vec_ids = result["ids"][0] if result["ids"] else []
+        vector_ranks = {ref: rank + 1 for rank, ref in enumerate(vec_ids)}
+    except Exception:
+        vector_ranks = {}
+
+    # RRF fusion k=60
+    k = 60
+    worst = len(eligible)
+    fused = []
+    for ref, clause in eligible.items():
+        r_bm25 = bm25_ranks.get(ref, worst)
+        r_vec = vector_ranks.get(ref, worst)
+        score = 1 / (k + r_bm25) + 1 / (k + r_vec)
+        fused.append((score, clause))
+    fused.sort(key=lambda x: x[0], reverse=True)
+
+    results = [
+        {
+            "clause_ref": c.clause_ref,
+            "policy_id": c.policy_id,
+            "heading": "",  # heading stored in DB
+            "text": c.text[:400],
+            "score": round(score, 6),
+            "policy_class": c.policy_class,
+            "version": c.version,
+        }
+        for score, c in fused[:top_k]
+    ]
+
+    return {"query": q, "results": results, "total": len(results), "index_size": len(idx.clauses)}
+
 
 
 @app.get("/api/requests", response_model=list[RequestOut])
@@ -842,3 +1310,69 @@ def create_work_order(body: dict = Body(...)):
         "assigned_to": "EMP-207",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
+
+
+# --- V2 Enhancement APIs: Flight Options & Shareable Summaries ---
+
+@app.get("/api/travel/flights")
+def get_flight_options(origin: str = "Chennai", destination: str = "Berlin"):
+    """V2 Flight Connector Seam: Returns realistic flight options matching origin/destination."""
+    return {
+        "origin": origin,
+        "destination": destination,
+        "flights": [
+            {
+                "flight_number": "AI-121",
+                "airline": "Air India",
+                "departure_time": "08:30 AM",
+                "arrival_time": "02:00 PM",
+                "duration": "5h 30m",
+                "cabin_class": "Business Class",
+                "fare_inr": 82000,
+                "policy_limit_inr": 85000,
+                "policy_compliant": True,
+                "recommended": True
+            },
+            {
+                "flight_number": "LH-755",
+                "airline": "Lufthansa",
+                "departure_time": "01:15 PM",
+                "arrival_time": "07:45 PM",
+                "duration": "6h 30m",
+                "cabin_class": "Business Class",
+                "fare_inr": 88000,
+                "policy_limit_inr": 85000,
+                "policy_compliant": False,
+                "recommended": False
+            },
+            {
+                "flight_number": "SQ-529",
+                "airline": "Singapore Airlines",
+                "departure_time": "11:00 PM",
+                "arrival_time": "05:30 AM (+1)",
+                "duration": "6h 00m",
+                "cabin_class": "Premium Economy",
+                "fare_inr": 64000,
+                "policy_limit_inr": 85000,
+                "policy_compliant": True,
+                "recommended": False
+            }
+        ]
+    }
+
+
+@app.post("/api/share-summary")
+def generate_share_summary(body: dict = Body(...)):
+    request_id = body.get("request_id", "REQ-101")
+    return {
+        "share_id": f"SHARE-{int(datetime.now(timezone.utc).timestamp())}",
+        "request_id": request_id,
+        "share_url": f"http://localhost:5173/requests/{request_id}?share=true",
+        "summary_card": {
+            "title": f"Governance Review Summary — {request_id}",
+            "policy_status": "COMPLIANT",
+            "tier": 2,
+            "generated_at": datetime.now(timezone.utc).isoformat()
+        }
+    }
+

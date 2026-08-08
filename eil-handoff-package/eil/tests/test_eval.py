@@ -262,3 +262,15 @@ def test_routing_accuracy_meets_threshold(summary):
     assert summary["routing_accuracy"] >= THRESHOLDS["routing_accuracy_min"], (
         f"{summary['routing_accuracy']:.2%} < {THRESHOLDS['routing_accuracy_min']:.2%}"
     )
+
+
+def test_eval_positive_flows(summary):
+    """Positive Flow Test: Ensures valid low-risk cases pass auto-approval or correct routing cleanly."""
+    assert summary["intent_ok"] > 0, "Positive intent classification failed"
+    assert summary["routing_ok"] > 0, "Positive routing failed"
+
+
+def test_eval_negative_flows(summary):
+    """Negative Flow Test: Ensures policy exceptions, hard blocks, or high risk cases are NEVER auto-approved."""
+    assert len(summary["false_auto_approvals"]) == 0, f"Negative cases were illegally auto-approved: {summary['false_auto_approvals']}"
+

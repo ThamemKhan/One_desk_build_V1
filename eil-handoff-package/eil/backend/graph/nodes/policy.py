@@ -33,6 +33,17 @@ def run(state: RequestState) -> dict:
         rule_result_dicts = [asdict(r) for r in rule_results]
         violated = [r for r in rule_result_dicts if r["applicable"] and not r["passed"]]
 
+        tier = None
+        if any(r.get("hard_block") for r in violated):
+            from backend.catalog import load_catalog
+            catalog = load_catalog()
+            service = catalog.get(service_id, {})
+            base_tier = service.get("base_tier", 1)
+            tier = base_tier
+            for r in violated:
+                if r.get("hard_block"):
+                    tier = max(tier, r.get("tier_override") or 4)
+
         with record_decision(session, state["request_id"], "POLICY", "RULE_ENGINE", "engine.rules") as rec:
             rec.inputs_used = {"service_id": service_id, "payload": entities}
             rec.clause_refs = [hit["clause_ref"] for hit in clause_hits]
@@ -41,4 +52,7 @@ def run(state: RequestState) -> dict:
     finally:
         session.close()
 
-    return {"clause_hits": clause_hits, "rule_results": rule_result_dicts}
+    res = {"clause_hits": clause_hits, "rule_results": rule_result_dicts}
+    if tier is not None:
+        res["tier"] = tier
+    return res
