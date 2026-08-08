@@ -31,7 +31,7 @@ fields:
   - { name: days_until_departure,   type: int,    source: derived, rule: "start_date - today" }
   - { name: trip_type,              type: enum,   source: derived, values: [DOMESTIC, INTERNATIONAL] }
   - { name: purpose,                type: string, source: ask, prompt_hint: "business purpose", optional: true }
-  - { name: hotel_rate_per_night,   type: number, source: ask, prompt_hint: "nightly hotel rate" }
+  - { name: hotel_rate_per_night,   type: number, source: derived, rule: "lodging_cap lookup by grade and city tier (POL-TRV-101§3.1)", optional: true }
   - { name: travel_cost_estimate,   type: number, source: derived, rule: "fare_table lookup by route" }
   - { name: total_estimated_cost,   type: number, source: derived, rule: "hotel_rate_per_night * nights + travel_cost_estimate" }
   - { name: booking_status,         type: enum,   source: derived, default: NOT_BOOKED, values: [NOT_BOOKED, BOOKED] }

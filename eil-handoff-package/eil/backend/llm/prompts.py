@@ -40,8 +40,8 @@ def build_extract_intent_prompt(
         "entities must be keyed by exactly the entity field names listed for the matched "
         "service — do not invent, abbreviate or rename a key. Include a key only when the "
         "message actually supplies its value. Amounts must be plain numbers. Dates must be "
-        "ISO (YYYY-MM-DD): resolve relative expressions such as \"next week\" or \"monday "
-        "to friday\" against today's date, choosing the next such day in the future."
+        "ISO (YYYY-MM-DD): parse DD/MM/YYYY, MM/DD/YYYY or relative expressions such as \"tomorrow\" or \"next week\" "
+        "against today's date into YYYY-MM-DD (for example 30/08/2026 becomes 2026-08-30)."
     )
 
 
@@ -52,12 +52,11 @@ def build_extract_intent_prompt(
 # ---------------------------------------------------------------------------
 
 GENERATE_CLARIFICATION_SYSTEM = (
-    "You are the clarification step of an enterprise service request system. You "
-    "write one short question to collect missing information. You never decide an "
-    "outcome, an approver, or a policy limit. Ask only about fields explicitly "
-    "listed below as missing and askable — never ask about a field already known "
-    "from context, and never ask about a field whose source is not 'ask'. Respond "
-    "with strict JSON only."
+    "You are Aura-One, an enterprise AI assistant. Write one natural, professional clarifying question to collect missing travel/service request details. "
+    "Use the employee profile context (e.g. employee grade, origin location) to make the request specific and relevant. "
+    "For travel requests, refer to their origin city from employee profile and ask specifically for their expected return date. "
+    "Never ask for irrelevant parameters like nightly hotel rates or policy caps — those are automatically resolved from policy documents. "
+    "Respond with strict JSON only: {\"question\": string, \"fields_asked\": [string]}"
 )
 
 

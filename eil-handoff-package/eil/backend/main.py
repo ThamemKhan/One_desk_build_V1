@@ -192,18 +192,21 @@ def _reply_text(state: dict) -> str:
     if not intent or intent == "GREETING" or intent == "GENERAL_INQUIRY":
         return "Hello! I am Aura-One, your enterprise AI assistant. How can I help you today? You can ask me to request system access, book travel, submit leave, or request software licenses."
 
+    messages = state.get("messages") or []
+    assistant = [m for m in messages if m.get("role") == "assistant" and m.get("content")]
+
     missing = state.get("missing_fields") or []
     if missing and len(missing) > 0:
-        readable_fields = [f.replace("_", " ") for f in missing]
+        if assistant and len(assistant) > 0:
+            return assistant[-1]["content"]
+        readable_fields = [f.replace("_", " ").replace("end date", "return date") for f in missing]
         fields_str = ", ".join(readable_fields)
-        return f"To proceed with your {intent.replace('_', ' ').title()}, could you please specify: {fields_str}?"
+        return f"To proceed with your {intent.replace('_', ' ').title()}, could you please specify your {fields_str}?"
 
     if state.get("explanation"):
         return state["explanation"]
     if state.get("halt_reason"):
         return f"Request escalated to service desk due to policy condition ({state['halt_reason']})."
-    messages = state.get("messages") or []
-    assistant = [m for m in messages if m.get("role") == "assistant" and m.get("content")]
     if assistant:
         return assistant[-1]["content"]
     if state.get("outcome"):
@@ -330,12 +333,20 @@ def chat(payload: ChatRequest, x_persona_id: str | None = Header(default=None)):
                 request_id = f"REQ-{int(datetime.now(timezone.utc).timestamp())}"
 
         # 1. Classify if message is general inquiry or transaction
+        config = {"configurable": {"thread_id": request_id}}
+        existing = _graph.get_state(config)
+        existing_state = existing.values or {} if existing else {}
+
         msg_lower = payload.message.lower().strip()
         greetings = ["hey", "hello", "hi", "hallo", "good morning", "good afternoon", "good evening", "hey there", "hi aura", "help"]
         is_greeting = any(msg_lower.startswith(g) or msg_lower == g for g in greetings) or len(msg_lower) < 4
-        
+
+        has_active_transaction = (
+            bool(existing_state.get("intent")) and existing_state.get("intent") not in ("GREETING", "GENERAL_INQUIRY")
+        ) or bool(existing_state.get("missing_fields"))
+
         category = "transaction"
-        if not is_greeting:
+        if not is_greeting and not has_active_transaction:
             try:
                 cls_res = call_llm(
                     session,

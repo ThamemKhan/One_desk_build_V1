@@ -34,39 +34,62 @@ def run(state: RequestState) -> dict:
         (m["content"] for m in reversed(messages) if m.get("role") == "user"), ""
     )
 
+    existing_intent = state.get("intent")
+    existing_service_id = state.get("service_id")
+    existing_entities = state.get("entities") or {}
+
     last_user_lower = last_user_message.lower().strip()
     greetings = ["hey", "hello", "hi", "hallo", "good morning", "good afternoon", "good evening", "hey there", "hi aura", "help"]
-    if any(last_user_lower.startswith(g) or last_user_lower == g for g in greetings) or len(last_user_lower) < 4:
+    if not existing_intent and (any(last_user_lower.startswith(g) or last_user_lower == g for g in greetings) or len(last_user_lower) < 4):
         return {
             "intent": "GREETING",
             "intent_confidence": 1.0,
             "service_id": None,
-            "entities": state.get("entities", {}),
+            "entities": existing_entities,
             "halt_reason": None,
             "missing_fields": [],
         }
 
+    # Build conversation context string for full multi-turn memory
+    convo_turns = []
+    for m in messages:
+        role = "Employee" if m.get("role") == "user" else "Assistant"
+        content = m.get("content") or ""
+        if content:
+            convo_turns.append(f"{role}: {content}")
+    
+    full_message_prompt = (
+        f"Conversation History:\n" + "\n".join(convo_turns) + f"\n\nLatest Employee Input:\n{last_user_message}"
+        if len(convo_turns) > 1
+        else last_user_message
+    )
+
     session = SessionLocal()
     try:
         prompt = build_extract_intent_prompt(
-            last_user_message, _catalog_summary(), date.today().isoformat()
+            full_message_prompt, _catalog_summary(), date.today().isoformat()
         )
         result = call_llm(session, state["request_id"], "INTENT", prompt, EXTRACT_INTENT_SYSTEM)
     finally:
         session.close()
 
     confidence = result.get("confidence") or 0.0
+    
+    # If we already have an active transactional intent on this thread, preserve it unless overwritten with high confidence
+    final_intent = result.get("intent")
+    final_service = result.get("service_id")
+    if existing_intent and existing_intent not in ("GREETING", "GENERAL_INQUIRY") and (not final_intent or confidence < 0.7):
+        final_intent = existing_intent
+        final_service = existing_service_id
+        confidence = max(confidence, 0.95)
+
     gate = gate_intent_confidence(confidence)
 
     res = {
-        "intent": result.get("intent"),
+        "intent": final_intent,
         "intent_confidence": confidence,
-        "service_id": result.get("service_id"),
-        "entities": {**state.get("entities", {}), **(result.get("entities") or {})},
-        # Always emit halt_reason, including None. Graph state persists across
-        # turns on the same thread_id, so a halt set by an earlier low-confidence
-        # message would otherwise stick permanently and bounce every later turn
-        # to communicate — however confident the new message is.
+        "service_id": final_service,
+        "entities": {**existing_entities, **(result.get("entities") or {})},
         "halt_reason": gate.halt_reason,
     }
     if result.get("instruction_override_detected"):

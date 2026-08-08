@@ -84,9 +84,17 @@ def _derive_travel_fields(entities: dict, context: dict, service: dict) -> dict:
     derived["travel_cost_estimate"] = travel_cost_estimate
 
     hotel_rate = entities.get("hotel_rate_per_night")
-    if hotel_rate is not None and derived.get("nights") is not None:
-        derived["total_estimated_cost"] = hotel_rate * derived["nights"] + travel_cost_estimate
+    if hotel_rate is None:
+        grade = context.get("employee", {}).get("grade", "G5")
+        is_tier1 = derived.get("destination_city_tier") == 1
+        if grade in ["G7", "G8", "G9", "G5", "G6"]:
+            hotel_rate = 10000 if is_tier1 else 7000
+        else:
+            hotel_rate = 7000 if is_tier1 else 5000
+        derived["hotel_rate_per_night"] = hotel_rate
 
+    nights = derived.get("nights", 1)
+    derived["total_estimated_cost"] = hotel_rate * nights + travel_cost_estimate
     derived["booking_status"] = "NOT_BOOKED"
     return derived
 
