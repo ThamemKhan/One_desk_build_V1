@@ -1,9 +1,15 @@
 from langgraph.graph import END, StateGraph
 
-from backend.graph.nodes import approval, clarifier, communicate, context, exception, intent, policy, router
+from backend.graph.nodes import approval, clarifier, communicate, context, exception, guardrails, intent, policy, router
 from backend.graph.state import RequestState
 
 CHECKPOINT_DB_PATH = "checkpoints.sqlite"
+
+
+def _route_after_guardrails(state: RequestState) -> str:
+    if state.get("halt_reason"):
+        return "communicate"
+    return "intent"
 
 
 def _route_after_clarifier(state: RequestState) -> str:
@@ -12,6 +18,7 @@ def _route_after_clarifier(state: RequestState) -> str:
     if state.get("missing_fields"):
         return END
     return "policy"
+
 
 
 def _route_after_policy(state: RequestState) -> str:
@@ -44,6 +51,7 @@ def build_graph(checkpointer):
     runs off-graph as a service over the stuck-request queue (SPEC §5, §7.4).
     """
     graph = StateGraph(RequestState)
+    graph.add_node("guardrails", guardrails.run)
     graph.add_node("intent", intent.run)
     graph.add_node("context", context.run)
     graph.add_node("clarifier", clarifier.run)
@@ -53,7 +61,10 @@ def build_graph(checkpointer):
     graph.add_node("approval", approval.run)
     graph.add_node("communicate", communicate.run)
 
-    graph.set_entry_point("intent")
+    graph.set_entry_point("guardrails")
+    graph.add_conditional_edges(
+        "guardrails", _route_after_guardrails, {"communicate": "communicate", "intent": "intent"}
+    )
     graph.add_edge("intent", "context")
     graph.add_edge("context", "clarifier")
 

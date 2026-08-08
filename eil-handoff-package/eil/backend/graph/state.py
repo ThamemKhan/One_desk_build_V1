@@ -21,3 +21,5 @@ class RequestState(TypedDict, total=False):
     outcome: str | None
     explanation: str | None
     halt_reason: str | None  # set when escalating to human
+    instruction_override_detected: bool
+

@@ -39,6 +39,6 @@ rules:
     when: { field: requested_days, op: gt, value: 5 }
     assert: { field: days_until_start, op: gte, value: 14 }
     on_violation:
-      exceptionable: true
+      adds_approval: true
       severity: LOW
       approver_role: REPORTING_MANAGER
