@@ -80,22 +80,25 @@ def build_index(session: Session) -> HybridIndex:
     client = chromadb.EphemeralClient()
     collection = client.get_or_create_collection(name="clauses")
     if indexed:
-        collection.add(
-            ids=[c.clause_ref for c in indexed],
-            embeddings=[hash_embed(c.text) for c in indexed],
-            documents=[c.text for c in indexed],
-            metadatas=[
-                {
-                    "clause_ref": c.clause_ref,
-                    "policy_id": c.policy_id,
-                    "version": c.version,
-                    "effective_date": c.effective_date,
-                    "owner_dept": c.owner_dept,
-                    "policy_class": c.policy_class,
-                    "tags_csv": ",".join(c.tags),
-                }
-                for c in indexed
-            ],
-        )
+        batch_size = 2000
+        for i in range(0, len(indexed), batch_size):
+            batch = indexed[i : i + batch_size]
+            collection.add(
+                ids=[c.clause_ref for c in batch],
+                embeddings=[hash_embed(c.text) for c in batch],
+                documents=[c.text for c in batch],
+                metadatas=[
+                    {
+                        "clause_ref": c.clause_ref,
+                        "policy_id": c.policy_id,
+                        "version": c.version,
+                        "effective_date": c.effective_date,
+                        "owner_dept": c.owner_dept,
+                        "policy_class": c.policy_class,
+                        "tags_csv": ",".join(c.tags),
+                    }
+                    for c in batch
+                ],
+            )
 
     return HybridIndex(clauses=indexed, bm25=bm25, collection=collection)
